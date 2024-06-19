@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
+import com.jeizard.onboarding.ui.screens.HomeScreen
 import com.jeizard.onboarding.ui.screens.OnBoardingScreen
 
 @Composable
@@ -19,7 +20,7 @@ fun AppNavHost(
             OnBoardingScreen(navController)
         }
         composable(NavigationItem.Home.route) {
-            //HomeScreen(navController)
+            HomeScreen()
         }
     }
 }
