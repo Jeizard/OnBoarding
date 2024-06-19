@@ -1,8 +1,13 @@
 package com.jeizard.onboarding.ui.screens
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -59,44 +64,49 @@ fun OnBoardingScreen(navController: NavHostController) {
     )
     val state = rememberPagerState(pageCount = { items.size })
 
-    OnBoardingTheme {
-        Column(
+    val animatedColor = animateColorAsState(
+        targetValue = items[state.currentPage].backgroundColor,
+        animationSpec = tween(durationMillis = 300, delayMillis = 0),
+        label = "ColorAnimation")
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(animatedColor.value)
+    ) {
+        HorizontalPager(
+            state = state,
             modifier = Modifier
                 .fillMaxSize()
-                .background(items[state.currentPage].backgroundColor)
+                .weight(0.85f)
         ) {
-            HorizontalPager(
-                state = state,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(0.85f)
-            ) {
-                page -> OnBoardingItem(item = items[page])
-            }
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .weight(0.15f)
-            ){
-                BottomBar(
-                    size = items.size,
-                    selectedIndex = state.currentPage,
-                    backgroundColor = items[state.currentPage].backgroundColor,
-                    onNextClicked = {
-                        if(state.currentPage < (items.size - 1)){
-                            scope.launch {
-                                state.scrollToPage(state.currentPage + 1)
-                            }
-                        } else{
-                            navController.popBackStack()
-                            navController.navigate(NavigationItem.Home.route)
+            page -> OnBoardingItem(item = items[page])
+        }
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .weight(0.15f)
+        ){
+            BottomBar(
+                size = items.size,
+                selectedIndex = state.currentPage,
+                backgroundColor = items[state.currentPage].backgroundColor,
+                onNextClicked = {
+                    if(state.currentPage < (items.size - 1)){
+                        scope.launch {
+                            state.animateScrollToPage(
+                                page = state.currentPage + 1,
+                                animationSpec = tween(durationMillis = 300, delayMillis = 0))
                         }
-                    },
-                    onSkipClicked = {
+                    } else{
                         navController.popBackStack()
                         navController.navigate(NavigationItem.Home.route)
                     }
-                )
-            }
+                },
+                onSkipClicked = {
+                    navController.popBackStack()
+                    navController.navigate(NavigationItem.Home.route)
+                }
+            )
         }
     }
 }
@@ -144,7 +154,8 @@ fun BottomBar(
     selectedIndex: Int,
     backgroundColor: Color,
     onNextClicked: () -> Unit,
-    onSkipClicked: () -> Unit) {
+    onSkipClicked: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -159,7 +170,7 @@ fun BottomBar(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .clickable {
-                    onSkipClicked
+                    onSkipClicked()
                 }
         )
 
@@ -177,14 +188,24 @@ fun BoxScope.CircularProgressButton(
     size: Int,
     selectedIndex: Int,
     backgroundColor: Color,
-    onNextClicked: () -> Unit) {
+    onNextClicked: () -> Unit
+) {
+    val animatedProgress = animateFloatAsState(
+        targetValue = ((selectedIndex + 1).toFloat() / size.toFloat()),
+        animationSpec = tween(durationMillis = 300, delayMillis = 0),
+        label = "ProgressAnimation")
+    val animatedColor = animateColorAsState(
+        targetValue = backgroundColor,
+        animationSpec = tween(durationMillis = 300, delayMillis = 0),
+        label = "ColorAnimation")
+
     Box(
         modifier = Modifier
             .size(58.dp)
             .align(Alignment.CenterEnd)
     ) {
         CircularProgressIndicator(
-            progress = ((selectedIndex + 1).toFloat() / size.toFloat()),
+            progress = animatedProgress.value,
             modifier = Modifier
                 .size(58.dp)
                 .align(Alignment.Center),
@@ -194,12 +215,12 @@ fun BoxScope.CircularProgressButton(
         )
 
         FloatingActionButton(
-            onClick = { onNextClicked },
+            onClick = { onNextClicked() },
             modifier = Modifier
                 .size(42.dp)
                 .align(Alignment.Center),
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = backgroundColor,
+            contentColor = animatedColor.value,
             shape = CircleShape
         ) {
             Icon(
@@ -224,7 +245,7 @@ fun BoxScope.Indicators(size: Int, selectedIndex: Int) {
 }
 @Composable
 fun Indicator(isSelected: Boolean) {
-    val width = animateDpAsState(
+    val animatedWidth = animateDpAsState(
         targetValue = if (isSelected) 24.dp else 8.dp,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
         label = "IndicatorWidthAnimation"
@@ -233,7 +254,7 @@ fun Indicator(isSelected: Boolean) {
     Box(
         modifier = Modifier
             .height(8.dp)
-            .width(width.value)
+            .width(animatedWidth.value)
             .clip(CircleShape)
             .background(
                 if (isSelected) MaterialTheme.colorScheme.primary
