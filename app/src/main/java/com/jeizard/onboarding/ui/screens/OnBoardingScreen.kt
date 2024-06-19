@@ -1,11 +1,9 @@
 package com.jeizard.onboarding.ui.screens
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -122,7 +120,7 @@ fun OnBoardingItem(item: OnBoardingItem) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(24.dp, 24.dp, 24.dp, 38.dp,)
+            modifier = Modifier.padding(24.dp, 24.dp, 54.dp, 38.dp,)
         ) {
             Text(
                 text = stringResource(id = item.title),
@@ -159,7 +157,7 @@ fun BottomBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
+            .padding(24.dp, 12.dp, 24.dp, 12.dp)
     ) {
         Indicators(size = size, selectedIndex = selectedIndex)
 
@@ -296,6 +294,16 @@ fun FourthOnBoardingScreenPreview() {
     OnBoardingTheme {
         Box(modifier = Modifier.background(OnBoardingItem.Fourth.backgroundColor)) {
             OnBoardingItem(item = OnBoardingItem.Fourth)
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun BottomBarPreview() {
+    OnBoardingTheme {
+        Box(modifier = Modifier.background(OnBoardingItem.First.backgroundColor)){
+            BottomBar(4, 1, OnBoardingItem.First.backgroundColor, {}, {})
         }
     }
 }
