@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,9 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.jeizard.onboarding.model.OnBoardingItem
 import com.jeizard.onboarding.navigation.NavigationItem
-import com.jeizard.onboarding.navigation.Screen
 import com.jeizard.onboarding.ui.theme.OnBoardingTheme
-import com.jeizard.onboarding.ui.theme.Yellow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -53,7 +52,10 @@ fun OnBoardingScreen(navController: NavHostController) {
     val scope = rememberCoroutineScope()
 
     val items = listOf(
-        OnBoardingItem.First
+        OnBoardingItem.First,
+        OnBoardingItem.Second,
+        OnBoardingItem.Third,
+        OnBoardingItem.Fourth
     )
     val state = rememberPagerState(pageCount = { items.size })
 
@@ -73,7 +75,8 @@ fun OnBoardingScreen(navController: NavHostController) {
             }
             Box(modifier = Modifier
                 .fillMaxSize()
-                .weight(0.15f)){
+                .weight(0.15f)
+            ){
                 BottomBar(
                     size = items.size,
                     selectedIndex = state.currentPage,
@@ -91,7 +94,8 @@ fun OnBoardingScreen(navController: NavHostController) {
                     onSkipClicked = {
                         navController.popBackStack()
                         navController.navigate(NavigationItem.Home.route)
-                    })
+                    }
+                )
             }
         }
     }
@@ -108,24 +112,29 @@ fun OnBoardingItem(item: OnBoardingItem) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(25.dp)
+            modifier = Modifier.padding(24.dp, 24.dp, 24.dp, 38.dp,)
         ) {
             Text(
                 text = stringResource(id = item.title),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 24.sp,
-                modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 12.dp))
+                modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 12.dp)
+            )
             Text(
                 text = stringResource(id = item.body),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary.copy(0.9f),
-                fontSize = 18.sp)
+                fontSize = 18.sp
+            )
         }
         Image(
             painter = painterResource(id = item.image),
             contentDescription = "OnBoardingImage",
-            modifier = Modifier.fillMaxWidth())
+            contentScale = ContentScale.FillWidth,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
     }
 }
 
@@ -158,7 +167,8 @@ fun BottomBar(
             size = size,
             selectedIndex = selectedIndex,
             backgroundColor = backgroundColor,
-            onNextClicked = onNextClicked)
+            onNextClicked = onNextClicked
+        )
     }
 }
 
@@ -236,8 +246,35 @@ fun Indicator(isSelected: Boolean) {
 @Preview(showBackground = true)
 fun FirstOnBoardingScreenPreview() {
     OnBoardingTheme {
-        Box(modifier = Modifier.background(Yellow)) {
+        Box(modifier = Modifier.background(OnBoardingItem.First.backgroundColor)) {
             OnBoardingItem(item = OnBoardingItem.First)
+        }
+    }
+}
+@Composable
+@Preview(showBackground = true)
+fun SecondOnBoardingScreenPreview() {
+    OnBoardingTheme {
+        Box(modifier = Modifier.background(OnBoardingItem.Second.backgroundColor)) {
+            OnBoardingItem(item = OnBoardingItem.Second)
+        }
+    }
+}
+@Composable
+@Preview(showBackground = true)
+fun ThirdOnBoardingScreenPreview() {
+    OnBoardingTheme {
+        Box(modifier = Modifier.background(OnBoardingItem.Third.backgroundColor)) {
+            OnBoardingItem(item = OnBoardingItem.Third)
+        }
+    }
+}
+@Composable
+@Preview(showBackground = true)
+fun FourthOnBoardingScreenPreview() {
+    OnBoardingTheme {
+        Box(modifier = Modifier.background(OnBoardingItem.Fourth.backgroundColor)) {
+            OnBoardingItem(item = OnBoardingItem.Fourth)
         }
     }
 }
