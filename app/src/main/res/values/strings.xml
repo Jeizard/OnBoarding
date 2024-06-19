@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">OnBoarding</string>
+    <string name="onboarding_title_1">Your first car without a driver\'s license</string>
+    <string name="onboarding_body_1">Goes to meet people who just got their license</string>
 </resources>
