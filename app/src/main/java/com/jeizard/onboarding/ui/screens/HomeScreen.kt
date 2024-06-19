@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jeizard.onboarding.R
 import androidx.compose.material3.Text
 import com.jeizard.onboarding.ui.theme.Blue
+import com.jeizard.onboarding.ui.theme.OnBoardingTheme
 
 @Composable
 fun HomeScreen() {
@@ -32,5 +33,7 @@ fun HomeScreen() {
 @Composable
 @Preview(showBackground = true)
 fun HomeScreenPreview() {
-    HomeScreen()
+    OnBoardingTheme {
+        HomeScreen()
+    }
 }
