@@ -52,7 +52,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnBoardingScreen(navController: NavHostController) {
-    val scope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
 
     val items = listOf(
         OnBoardingItem.First,
@@ -90,7 +90,7 @@ fun OnBoardingScreen(navController: NavHostController) {
                 backgroundColor = items[state.currentPage].backgroundColor,
                 onNextClicked = {
                     if(state.currentPage < (items.size - 1)){
-                        scope.launch {
+                        coroutineScope.launch {
                             state.animateScrollToPage(
                                 page = state.currentPage + 1,
                                 animationSpec = tween(durationMillis = 300, delayMillis = 0))
@@ -114,8 +114,7 @@ fun OnBoardingItem(item: OnBoardingItem) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -140,8 +139,7 @@ fun OnBoardingItem(item: OnBoardingItem) {
             painter = painterResource(id = item.image),
             contentDescription = "OnBoardingImage",
             contentScale = ContentScale.FillWidth,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
